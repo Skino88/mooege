@@ -107,17 +107,19 @@ namespace Mooege.Core.GS.Actors.Implementations
 
         public virtual void OnRequestBuyItem(Players.Player player, uint itemId)
         {
-            // TODO: Check gold here
             Item item = _vendorGrid.GetItem(itemId);
             if (item == null)
                 return;
 
-            if (!player.Inventory.HasInventorySpace(item))
-            {
-                return;
-            }
+            int price = item.ItemDefinition.BaseGoldValue;
 
-            // TODO: Remove the gold
+            if (player.Inventory.GetGoldAmount() < price)
+                return;
+
+            if (!player.Inventory.HasInventorySpace(item))
+                return;
+
+            player.Inventory.RemoveGoldAmount(price);
             player.Inventory.BuyItem(item);
         }
     }
